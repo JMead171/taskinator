@@ -61,11 +61,6 @@ var completeEditTask = function(taskName, taskType, taskId) {
 var createTaskE1 = function(taskDataObj) {
     var listItemE1 = document.createElement("li");
     listItemE1.className = "task-item";
-
-    console.log(taskDataObj);
-    console.log(taskDataObj.status);
-
-    // add task id as a custom attribute
     listItemE1.setAttribute("data-task-id", taskIdCounter);
     listItemE1.setAttribute("draggable", "true");
 
@@ -74,15 +69,29 @@ var createTaskE1 = function(taskDataObj) {
     taskInfoE1.innerHTML = "<h3 class='task-name'>" + taskDataObj.name + "</h3><span class='task-type'>" + taskDataObj.type + "</span>";
     listItemE1.appendChild(taskInfoE1);
 
+    var taskActionsE1 = createTaskActions(taskIdCounter);
+    listItemE1.appendChild(taskActionsE1);
+    
+    switch (taskDataObj.status) {
+        case "to do":
+          taskActionsE1.querySelector("select[name='status-change']").selectedIndex = 0;
+          tasksToDoE1.append(listItemE1);
+          break;
+        case "in progress":
+          taskActionsE1.querySelector("select[name='status-change']").selectedIndex = 1;
+          tasksInProgressE1.append(listItemE1);
+          break;
+        case "completed":
+          taskActionsE1.querySelector("select[name='status-change']").selectedIndex = 2;
+          tasksCompletedE1.append(listItemE1);
+          break;
+        default:
+          console.log("Something went wrong!");
+    }
+    
     taskDataObj.id = taskIdCounter;
     tasks.push(taskDataObj);
     saveTasks();
-
-    var taskActionsE1 = createTaskActions(taskIdCounter);
-    listItemE1.appendChild(taskActionsE1);
-
-    tasksToDoE1.appendChild(listItemE1);
-
     // increase task counter for next unique id
     taskIdCounter++;
 };
@@ -255,6 +264,23 @@ var dropZoneDragHandler = function(event) {
         localStorage.setItem("tasks", JSON.stringify(tasks));
     }
 
+    var loadTasks = function() {
+        // Gets tasks from localStorage
+        var savedTasks = localStorage.getItem("tasks");
+        
+        if (!savedTasks) {
+            return false;
+          }
+        // Convert Tasks from stringified
+        savedTasks = JSON.parse(savedTasks);
+    
+    
+        // Iterrates through task array & creates tasks elemnets on page
+        for (var i = 0; i < savedTasks.length; i++) {
+            createTaskE1(savedTasks[i]);
+        }
+    };
+
 
 formE1.addEventListener("submit", taskFormHandler); // add task button
 pageContentE1.addEventListener("click", taskButtonHandler); // edit & delete button
@@ -263,3 +289,4 @@ pageContentE1.addEventListener("dragstart", dragTaskHandler);
 pageContentE1.addEventListener("dragover", dropZoneDragHandler);
 pageContentE1.addEventListener("drop", dropTaskHandler);
 pageContentE1.addEventListener("dragleave", dragLeaveHandler);
+loadTasks();
