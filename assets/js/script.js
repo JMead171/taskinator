@@ -171,14 +171,15 @@ var dropZoneDragHandler = function(event) {
     var taskListE1 = event.target.closest(".task-list");
     if (taskListE1) {
         event.preventDefault();
+        taskListE1.setAttribute("style", "background: rgba(68, 233, 255, 07); borderStyle: dashed;");
     }
   };
 
   var dropTaskHandler = function(event) {
     var id = event.dataTransfer.getData("text/plain");
     var draggableElement = document.querySelector("[data-task-id='" + id + "']");
-    var dropZoneEl = event.target.closest(".task-list");
-    var statusType = dropZoneEl.id;
+    var dropZoneE1 = event.target.closest(".task-list");
+    var statusType = dropZoneE1.id;
     
     // set status of task based on dropZone id
     var statusSelectE1 = draggableElement.querySelector("select[name='status-change']");
@@ -192,9 +193,16 @@ var dropZoneDragHandler = function(event) {
       else if (statusType === "tasks-completed") {
         statusSelectE1.selectedIndex = 2;
       }
-
-    dropZoneEl.appendChild(draggableElement);
+    dropZoneE1.removeAttribute("style");
+    dropZoneE1.appendChild(draggableElement);
     };
+
+    var dragLeaveHandler = function(event) {
+       var taskListE1 = event.target.closest(".task-list");
+        if (taskListE1) {
+            taskListE1.removeAttribute("style");
+        }
+    }
 
 
 formE1.addEventListener("submit", taskFormHandler); // add task button
@@ -203,3 +211,4 @@ pageContentE1.addEventListener("change", taskStatusChangeHandler);  // drop down
 pageContentE1.addEventListener("dragstart", dragTaskHandler);
 pageContentE1.addEventListener("dragover", dropZoneDragHandler);
 pageContentE1.addEventListener("drop", dropTaskHandler);
+pageContentE1.addEventListener("dragleave", dragLeaveHandler);
