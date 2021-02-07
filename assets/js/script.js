@@ -1,13 +1,13 @@
-var taskIdCounter = 0;
+// Declare variables
 var pageContentE1 = document.querySelector('#page-content');
 var tasksInProgressE1 = document.querySelector("#tasks-in-progress");
 var tasksCompletedE1 = document.querySelector("#tasks-completed");
-
 var formE1 = document.querySelector("#task-form");
 var tasksToDoE1 = document.querySelector("#tasks-to-do");
+var taskIdCounter = 0;
 var tasks = [];
 
-// add task in header
+// Add task in header
 var taskFormHandler = function(event) {
     event.preventDefault();
     var taskNameInput = document.querySelector("input[name='task-name']").value;
